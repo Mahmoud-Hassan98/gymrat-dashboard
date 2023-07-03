@@ -129,6 +129,42 @@ app.put('/changerole/:user_id', async function (req, res) {
     catch (err) { console.log(err.message); }
 });
 
+app.get('/payments', (req, res) => {
+
+
+    // Fetch payment details with product information using a join query
+    const query = `
+      SELECT p.payment_id,p.user_id , p.payment_cost, p.payment_date, u.user_name, pr.name, pr.price , pr.id , pr.product_type
+      FROM payment p
+      JOIN users u ON p.user_id = u.user_id
+      JOIN payment_product pp ON p.payment_id = pp.payment_id
+      JOIN product pr ON pp.product_id = pr.id
+    `;
+
+    pool.query(query)
+      .then((result) => {
+        const payments = result.rows;
+        res.status(200).json({ success: true, payments });
+      })
+      .catch((error) => {
+        console.error('Error fetching payment details:', error);
+        res.status(500).json({ success: false, message: 'An error occurred while fetching payment details' });
+      });
+  
+ 
+});
+
+app.put('/payments/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const softDeleteBooking = await pool.query("UPDATE payment SET deleted = true WHERE payment_id = $1", [id]);
+    res.json('Booking is deleted');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json('Error deleting booking');
+  }
+});
 
 
 

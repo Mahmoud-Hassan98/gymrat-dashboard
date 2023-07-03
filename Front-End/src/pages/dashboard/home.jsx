@@ -10,7 +10,7 @@ export function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8181/getpitchwithuser")
+      .get("http://localhost:8181/getcoach")
       .then((response) => {
         const fetchedCoaches = response.data;
         const sortedCoaches = fetchedCoaches.sort((a, b) => a.id - b.id);
@@ -38,19 +38,22 @@ export function Home() {
   console.log(usersData);
 
    const [Purchases, setPurchases] = useState([]);
+
    useEffect(() => {
-  
-     axios
-      axios
-        .get("http://localhost:8181/bookings")
-        .then((response) => {
-            setPurchases(response.data.rows);
-        })
-        .catch((error) => {
-          console.error("Error retrieving data:", error);
-        });
- }, []);
-  console.log(Purchases);
+     const fetchPayments = async () => {
+       try {
+     
+         const response = await axios.get('http://localhost:8181/payments');
+         setPurchases(response.data.payments);
+         console.log(response.data.payments); // Log the fetched payments data
+       } catch (error) {
+         console.error('Error fetching payment history:', error);
+       }
+     };
+   
+     fetchPayments();
+   }, []);
+   console.log(Purchases);
   return (
     <>
       <div className="m-10 mx-auto grid max-w-screen-lg  gap-5 sm:grid-cols-3">
