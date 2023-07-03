@@ -38,7 +38,7 @@ export function Users() {
     const confirmed = await showUpdatePrompt();
     if (confirmed) {
       try {
-        await axios.put(`http://localhost:8181/mais/${id}`, {
+        await axios.put(`http://localhost:8181/changerole/${id}`, {
           id: id,
           role: role
         });
@@ -50,31 +50,6 @@ export function Users() {
   };
 
 
-  // const handleUpdate = async (id, role) => {
-  //   const confirmed = await showUpdatePrompt();
-  //   if (confirmed) {
-  //     try {
-  //       const response = await axios.put(`http://localhost:8181/mais/${id}`, {
-  //         id: id,
-  //         role: role
-  //       });
-  //       // Check if the update was successful
-  //       if (response.status === 200) {
-  //         // Update the role for the specific user in the state immediately
-  //         setUsersData(prevData => {
-  //           return prevData.map(user => {
-  //             if (user.user_id === id) {
-  //               return { ...user, role: role };
-  //             }
-  //             return user;
-  //           });
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // };
 
 
 

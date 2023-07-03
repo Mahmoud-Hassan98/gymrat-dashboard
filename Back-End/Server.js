@@ -91,7 +91,43 @@ app.put("/coach/:id/:isDeleted", async (req, res) => {
 });
 
 
+app.put('/deleteUser/:id', async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        // Instead of deleting the user, update the 'deleted' column to indicate it's soft deleted
+        await pool.query("UPDATE users SET deleted = true WHERE user_id = $1", [id]);
+        res.json('Your user has been soft deleted.');
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json('An error occurred while soft deleting the user.');
+    }
+});
+app.get('/usersData', async (req, res) => {
+    try {
+        const allUsers = await pool.query("SELECT * FROM users");
+        res.json(allUsers.rows);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.put('/changerole/:user_id', async function (req, res) {
+    try {
+        const { user_id } = req.params;
+        let id0 = req.body.id;
+        let role = req.body.role;
+        console.log(id0)
+        if (role == "coach") {
+            role = "user"
+        } else { role = "coach" }
+
+        const record = await pool.query("UPDATE users SET role = $1 WHERE user_id = $2",
+            [role, id0]);
+        res.send("Updated Successfully");
+    }
+    catch (err) { console.log(err.message); }
+});
 
 
 
